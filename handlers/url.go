@@ -42,8 +42,14 @@ func ShortenURL(c *gin.Context) {
 func ResolveURL(c *gin.Context) {
 	code := c.Param("code")
 	longURL, exists := store[code]
+	errorResponse := models.ShortenResponse{
+		Success: false,
+		Message: "URL not found",
+		Data:    models.DataPayload{},
+	}
+
 	if !exists {
-		c.JSON(http.StatusNotFound, gin.H{"error": "URL not found"})
+		c.JSON(http.StatusNotFound, errorResponse)
 		return
 	}
 	c.Redirect(http.StatusMovedPermanently, longURL)
